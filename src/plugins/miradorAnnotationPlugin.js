@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import * as actions from 'mirador/dist/es/src/state/actions';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import { MiradorMenuButton } from 'mirador/dist/es/src/components/MiradorMenuButton';
+import translations from '../translations';
 
 /** */
 class MiradorAnnotation extends Component {
@@ -18,21 +19,19 @@ class MiradorAnnotation extends Component {
       addCompanionWindow,
     } = this.props;
 
-    addCompanionWindow('annotationCreation', {
-      position: 'right',
-    });
+    addCompanionWindow('annotationCreation', { position: 'right' });
   }
 
   /** */
   render() {
-    const { TargetComponent, targetProps } = this.props;
+    const { TargetComponent, targetProps, t } = this.props;
     return (
       <div>
         <TargetComponent
           {...targetProps} // eslint-disable-line react/jsx-props-no-spreading
         />
         <MiradorMenuButton
-          aria-label="Create new annotation"
+          aria-label={t('createNewAnnotation')}
           onClick={this.openCreateAnnotationCompanionWindow}
           size="small"
         >
@@ -45,11 +44,16 @@ class MiradorAnnotation extends Component {
 
 MiradorAnnotation.propTypes = {
   addCompanionWindow: PropTypes.func.isRequired,
+  t: PropTypes.func,
   TargetComponent: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.node,
   ]).isRequired,
   targetProps: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+};
+
+MiradorAnnotation.defaultProps = {
+  t: (key) => key,
 };
 
 /** */
@@ -61,6 +65,9 @@ const mapDispatchToProps = (dispatch, props) => ({
 
 export default {
   component: MiradorAnnotation,
+  config: {
+    translations,
+  },
   mapDispatchToProps,
   mode: 'wrap',
   target: 'AnnotationSettings',

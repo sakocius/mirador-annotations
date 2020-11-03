@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { string } from 'prop-types';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
@@ -30,6 +30,7 @@ import AnnotationDrawing from './AnnotationDrawing';
 import TextEditor from './TextEditor';
 import WebAnnotation from './WebAnnotation';
 import CursorIcon from './icons/Cursor';
+import translations from './translations';
 
 /** */
 class AnnotationCreation extends Component {
@@ -208,7 +209,7 @@ class AnnotationCreation extends Component {
   /** */
   render() {
     const {
-      annotation, classes, closeCompanionWindow, id, windowId,
+      annotation, classes, closeCompanionWindow, id, windowId, config,
     } = this.props;
 
     const {
@@ -217,7 +218,8 @@ class AnnotationCreation extends Component {
     } = this.state;
     return (
       <CompanionWindow
-        title={annotation ? 'Edit annotation' : 'New annotation'}
+        // eslint-disable-next-line max-len
+        title={annotation ? config.translations[config.language].editAnnotation : config.translations[config.language].createNewAnnotation}
         windowId={windowId}
         id={id}
       >
@@ -231,11 +233,11 @@ class AnnotationCreation extends Component {
           updateGeometry={this.updateGeometry}
           windowId={windowId}
         />
-        <form onSubmit={this.submitForm}>
+        <form onSubmit={this.submitForm} className={classes.form}>
           <Grid container>
             <Grid item xs={12}>
               <Typography variant="overline">
-                Target
+                {config.translations[config.language].target}
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -245,13 +247,13 @@ class AnnotationCreation extends Component {
                   value={activeTool}
                   exclusive
                   onChange={this.changeTool}
-                  aria-label="tool selection"
+                  aria-label={config.translations[config.language].toolSelection}
                   size="small"
                 >
-                  <ToggleButton value="cursor" aria-label="select cursor">
+                  <ToggleButton value="cursor" aria-label={config.translations[config.language].selectCursor}>
                     <CursorIcon />
                   </ToggleButton>
-                  <ToggleButton value="edit" aria-label="select cursor">
+                  <ToggleButton value="edit" aria-label={config.translations[config.language].selectCursor}>
                     <FormatShapesIcon />
                   </ToggleButton>
                 </ToggleButtonGroup>
@@ -261,19 +263,19 @@ class AnnotationCreation extends Component {
                   value={activeTool}
                   exclusive
                   onChange={this.changeTool}
-                  aria-label="tool selection"
+                  aria-label={config.translations[config.language].toolSelection}
                   size="small"
                 >
-                  <ToggleButton value="rectangle" aria-label="add a rectangle">
+                  <ToggleButton value="rectangle" aria-label={config.translations[config.language].addRectangle}>
                     <RectangleIcon />
                   </ToggleButton>
-                  <ToggleButton value="ellipse" aria-label="add a circle">
+                  <ToggleButton value="ellipse" aria-label={config.translations[config.language].addCircle}>
                     <CircleIcon />
                   </ToggleButton>
-                  <ToggleButton value="polygon" aria-label="add a polygon">
+                  <ToggleButton value="polygon" aria-label={config.translations[config.language].addPolygon}>
                     <PolygonIcon />
                   </ToggleButton>
-                  <ToggleButton value="freehand" aria-label="free hand polygon">
+                  <ToggleButton value="freehand" aria-label={config.translations[config.language].addFreeHandPolygon}>
                     <GestureIcon />
                   </ToggleButton>
                 </ToggleButtonGroup>
@@ -283,17 +285,17 @@ class AnnotationCreation extends Component {
           <Grid container>
             <Grid item xs={12}>
               <Typography variant="overline">
-                Style
+                {config.translations[config.language].style}
               </Typography>
             </Grid>
             <Grid item xs={12}>
               <ToggleButtonGroup
-                aria-label="style selection"
+                aria-label={config.translations[config.language].styleSelection}
                 size="small"
               >
                 <ToggleButton
                   value="strokeColor"
-                  aria-label="select color"
+                  aria-label={config.translations[config.language].selectColor}
                   onClick={this.openChooseColor}
                 >
                   <StrokeColorIcon style={{ fill: strokeColor }} />
@@ -301,7 +303,7 @@ class AnnotationCreation extends Component {
                 </ToggleButton>
                 <ToggleButton
                   value="strokeColor"
-                  aria-label="select line weight"
+                  aria-label={config.translations[config.language].selectLineWeight}
                   onClick={this.openChooseLineWeight}
                 >
                   <LineWeightIcon />
@@ -309,7 +311,7 @@ class AnnotationCreation extends Component {
                 </ToggleButton>
                 <ToggleButton
                   value="fillColor"
-                  aria-label="select color"
+                  aria-label={config.translations[config.language].selectColor}
                   onClick={this.openChooseColor}
                 >
                   <FormatColorFillIcon style={{ fill: fillColor }} />
@@ -342,7 +344,7 @@ class AnnotationCreation extends Component {
           <Grid container>
             <Grid item xs={12}>
               <Typography variant="overline">
-                Content
+                {config.translations[config.language].content}
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -353,10 +355,10 @@ class AnnotationCreation extends Component {
             </Grid>
           </Grid>
           <Button onClick={closeCompanionWindow}>
-            Cancel
+            {config.translations[config.language].cancel}
           </Button>
           <Button variant="contained" color="primary" type="submit">
-            Save
+            {config.translations[config.language].save}
           </Button>
         </form>
         <Popover
@@ -400,6 +402,9 @@ const styles = (theme) => ({
   divider: {
     margin: theme.spacing(1, 0.5),
   },
+  form: {
+    padding: '10px',
+  },
   grouped: {
     '&:first-child': {
       borderRadius: theme.shape.borderRadius,
@@ -427,6 +432,8 @@ AnnotationCreation.propTypes = {
     annotation: PropTypes.shape({
       adapter: PropTypes.func,
     }),
+    language: string,
+    translations,
   }).isRequired,
   id: PropTypes.string.isRequired,
   receiveAnnotation: PropTypes.func.isRequired,

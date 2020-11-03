@@ -11,6 +11,7 @@ const config = {
     // adapter: (canvasId) => new AnnototAdapter(canvasId, endpointUrl),
   },
   id: 'demo',
+  language: 'lt',
   window: {
     defaultSideBarPanel: 'annotations',
     sideBarOpenByDefault: true,
